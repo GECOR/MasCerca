@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="toolbarTitle">
+      Semanal
+    </ion-title>
+    <button class="toolbarButton" (click)="utils.alertLogOut()">
+        <ion-icon name="power"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="about">
+
+<ion-list>
+  <ion-item *ngFor="let cuadrante of arrayDias" (click)="itemTapped(cuadrante)" disabled>
+    <ion-avatar item-left>
+      <ion-icon name="alarm"></ion-icon>
+    </ion-avatar>
+    <h2>{{cuadrante.Dia}}</h2>
+    <p>{{cuadrante.Nombres}}</p>
+  </ion-item>
+
+  <!--<ion-item *ngFor="let item of items" (click)="itemSelected(item)">
+    <ion-avatar item-left>
+      <ion-icon name="alarm"></ion-icon>
+    </ion-avatar>
+    <h2>{{item.Title}}</h2>
+    <p>{{item.Description}}</p>
+  </ion-item>-->
+</ion-list>
+</ion-content>

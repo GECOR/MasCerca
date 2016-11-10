@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>  
+    <ion-title class="toolbarTitle">
+      {{currentDate | date:'dd-MM-yyyy'}} - Hoy
+      <div class="subtitle">{{auxNomCompleto}}</div>
+    </ion-title>
+    <button class="toolbarButton" (click)="utils.alertLogOut()">
+        <ion-icon name="power"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="home">
+
+  <ion-card *ngFor="let cuadrante of arrayCargaCuadrante | filtroDia: item.DiaLetra" (click)="itemTapped(cuadrante)">
+    <ion-card-header>
+      <b>Hora</b> {{cuadrante.Hora}}
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        <b>Usuario:</b> {{cuadrante.Nombre}} {{cuadrante.Apellidos}}
+      </p>
+      <p>
+        <b>Dirección:</b> {{cuadrante.Direccion}}
+      </p>
+      <p>
+        <b>Tareas:</b> {{cuadrante.subcategoria}}
+      </p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
