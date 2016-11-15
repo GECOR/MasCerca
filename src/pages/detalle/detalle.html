@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Detalle</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding class="getting-started">
+
+  <ion-card *ngIf="boolEIC" (click)="doAlert()">
+      <ion-item class="cardEIC">
+        <ion-icon name="alert" item-left></ion-icon>
+        USUARIO CON EIC
+    </ion-item>
+  </ion-card>
+
+  <ion-list>
+
+      <!--<ion-label fixed>Username</ion-label>
+        <ion-input type="text" value=""></ion-input>-->
+
+    <ion-item>
+        <ion-label><b>Horas: </b> {{cargaCuadrante.Hora}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+        <ion-label><b>Usuario: </b> {{cargaCuadrante.Nombre}} {{cargaCuadrante.Apellidos}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+        <ion-label><b>Dirección: </b> {{cargaCuadrante.Direccion}}</ion-label>
+    </ion-item>
+
+    <!--<ion-item>
+        <ion-label><b>Tareas: </b> {{item.Task}}</ion-label>
+    </ion-item>-->
+
+    <ion-item>
+        <ion-label><b>Telefonos: </b> {{cargaCuadrante.NumTelf1}}</ion-label>
+    </ion-item>
+
+    </ion-list>
+
+    <div class="btnAcceso">
+        <button *ngIf="boolEntra" ion-button color="secondary" round (click)="switchEntra()">{{tituloBtn}}</button>
+        <button *ngIf="!boolEntra" ion-button color="danger" round (click)="switchEntra()">{{tituloBtn}}</button>
+    </div>
+
+
+    <div padding>
+        <button ion-button block (click)="itemTapped(item)">Incidencia</button>
+    </div>
+
+    <ion-card>
+        <ion-card-header>
+            Tareas
+        </ion-card-header>
+
+        <ion-list>
+            <ion-item *ngFor='let tasks of listTask'>
+                <ion-icon name="checkmark-circle" item-left></ion-icon>
+                {{tasks}}
+            </ion-item>
+        </ion-list>
+    </ion-card>
+
+</ion-content>

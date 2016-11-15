@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="toolbarTitle">
+      Incidencia
+    </ion-title>
+    <button ion-button class="toolbarButton" (click)="utils.alertLogOut()">
+        <ion-icon name="power"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+
+    <ion-item>
+      <ion-label>Usuario</ion-label>
+      <ion-select [(ngModel)]="listUsuarioSelect" multiple="false">
+        <ion-option value="{{usuarios.Usuario_ID}}" *ngFor="let usuarios of arrayUsuarios">{{usuarios.NUsuario}} {{usuarios.AUsuario}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Tipo</ion-label>
+      <ion-select [(ngModel)]="listTipoSelect" multiple="false">
+        <ion-option value="{{tipos.CodigoMotivo}}" *ngFor="let tipos of arrayTipos">{{tipos.MotivoIncServ}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Fecha Inicio</ion-label>
+      <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MM YYYY" [(ngModel)]="DateIni"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Hora Inicio</ion-label>
+      <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="HourIni"></ion-datetime>
+    </ion-item>
+
+    <!--<ion-item>
+      <ion-label>Fecha Fin</ion-label>
+      <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MM YYYY"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Hora Fin</ion-label>
+      <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime> 
+    </ion-item>-->
+    <!-- [(ngModel)]="event.timeStarts"-->
+
+    <ion-item>
+      <ion-label>Observaciones</ion-label>
+      <ion-input type="text" value="" [(ngModel)]="Obs"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-card>
+        <ion-card-content>
+        <ion-row>
+            <ion-col width-25 class="text-center">
+            <ion-spinner item-left *ngIf="uploadingImages[0]"></ion-spinner>
+            <button ion-button (click)="takePhoto(0)" [hidden]="images[0] != '' || uploadingImages[0]" outline><ion-icon name="image"></ion-icon></button>
+            <img [src]="images[0]" [hidden]="images[0] == '' || uploadingImages[0]" (click) = "openGallery()"/>
+            </ion-col>
+            <ion-col width-25 class="text-center">
+            <ion-spinner item-left *ngIf="uploadingImages[1]"></ion-spinner>
+            <button ion-button (click)="takePhoto(1)" [hidden]="images[1] != '' || uploadingImages[1]" outline><ion-icon name="image"></ion-icon></button>
+            <img [src]="images[1]" [hidden]="images[1] == '' || uploadingImages[1]" (click) = "openGallery()" />
+            </ion-col>
+            <ion-col width-25 class="text-center">
+            <ion-spinner item-left *ngIf="uploadingImages[2]"></ion-spinner>
+            <button ion-button (click)="takePhoto(2)" [hidden]="images[2] != '' || uploadingImages[2]" outline><ion-icon name="image"></ion-icon></button>
+            <img [src]="images[2]" [hidden]="images[2] == '' || uploadingImages[2]" (click) = "openGallery()" />
+            </ion-col>
+            <ion-col width-25 class="text-center">
+            <ion-spinner item-left *ngIf="uploadingImages[3]"></ion-spinner>
+            <button ion-button (click)="takePhoto(3)" [hidden]="images[3] != '' || uploadingImages[3]" outline><ion-icon name="image"></ion-icon></button>
+            <img [src]="images[3]" [hidden]="images[3] == '' || uploadingImages[3]" (click) = "openGallery()" />
+            </ion-col>
+        </ion-row>
+        </ion-card-content>
+    </ion-card>
+
+  <div padding>
+      <button ion-button block (click)="sendIncentAndPhotos()">Enviar</button>
+  </div>
+
+</ion-content>

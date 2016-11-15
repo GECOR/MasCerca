@@ -1,0 +1,49 @@
+<ion-header class="chat">
+  <ion-navbar>
+    <ion-title class="toolbarTitle">Chat</ion-title>
+    <button ion-button class="toolbarButton" (click)="utils.alertLogOut()">
+        <ion-icon name="power"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content #chatContent padding class="chat">
+
+    <ion-list no-lines>
+        <ion-item *ngFor="let messages of arrayMessageChat">
+            <ion-avatar *ngIf="messages.sendedByMe == 'True'" item-left> <!--{'item-right' : messages.isLocal == 1, 'item-left' : messages.isLocal == 0}-->
+                <img src="https://cdn.schd.ws/common/img/avatar-empty.png">
+            </ion-avatar>
+            <ion-avatar *ngIf="messages.sendedByMe == 'False'" item-right> <!--{'item-right' : messages.isLocal == 1, 'item-left' : messages.isLocal == 0}-->
+                <img src="https://cdn.schd.ws/common/img/avatar-empty.png">
+            </ion-avatar>
+            <h2>{{messages.sendedByName}}</h2>
+            <!--<h3>Don't Know What To Do!</h3>-->
+            <p>{{messages.message}}</p>
+        </ion-item>
+
+        <!--<ion-item>
+            <ion-avatar item-right>
+                <img src="https://cdn.schd.ws/common/img/avatar-empty.png">
+            </ion-avatar>
+            <h2>Central</h2>
+            <p>Cuentame! Estamos aquí para ayudarte!</p>
+        </ion-item>-->
+
+    </ion-list>
+
+</ion-content>
+
+<ion-footer class="chat">
+  <ion-toolbar>
+      <ion-item class="footerChat">
+        <!--<ion-title>Footer Toolbar</ion-title>-->
+        <ion-input type="text" value="" [(ngModel)]="textImput" (keydown.enter)="addMessage(textImput)"></ion-input>
+        <!--<ion-icon item-right name="send" (click)="addMessage(textImput)"></ion-icon>-->
+        <button ion-button outline item-right (click)="addMessage(textImput)" class="footerButtonClass">
+            <ion-icon name="send"></ion-icon>
+        </button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
