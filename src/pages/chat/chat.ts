@@ -144,7 +144,8 @@ export class chatPage {
   //public socketJoin(idRoom, token): Boolean {//SERVER 2
   public socketJoin(): Boolean {//SERVER 2
      try {
-       this.socket = io.connect('http://192.168.1.76:9898');
+       //this.socket = io.connect('http://192.168.1.76:9898');
+       this.socket = io.connect('http://52.40.216.64:8086');
      } catch (error) {
        console.error("Error SocketJoin",error)
      } finally{
