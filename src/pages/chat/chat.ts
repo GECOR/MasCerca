@@ -1,29 +1,22 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavParams, AlertController } from 'ionic-angular';
-//import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import { NgClass } from '@angular/common';
 import { UtilsProvider } from './../../providers/utils';
-import { messageChat } from './chatInterface';
+import { MessageChat } from './models';
 import { Auxiliar } from './../login/loginInterface';
 import { chatService } from './chatService';
 
-//declare var io;
-import * as io from "socket.io-client";
 
 @Component({
   templateUrl: 'chat.html',
   providers: [UtilsProvider, chatService, Storage]
 })
-export class chatPage {
-  //socket: any;
-  socket: SocketIOClient.Socket;
+export class chatPage {  
   messagesChat = [];
   textImput = "";
-  //storage: any;
   auxiliar: Auxiliar;
-  messageChat: messageChat;
-  arrayMessageChat: Array<messageChat>;
+  arrayMessageChat: Array<MessageChat>;
 
   @ViewChild('chatContent') content;
 
@@ -31,39 +24,16 @@ export class chatPage {
   , public alertCtrl: AlertController
   , public utils: UtilsProvider
   , public storage: Storage
-  , private chatService: chatService){
-
-    this.socketJoin();
-
-    this.messageChat = {
-        messageChat_ID: undefined,
-        dateMessage: undefined,
-        message: undefined,
-        sendedByAux_ID: undefined,
-        m_checked: undefined,
-        info: undefined,
-        sendedByName: undefined,
-        sendedByMe: undefined
-    }
-
-    this.messagesChat = [
-      {"name":"Usuario 1", "icon":"https://cdn.schd.ws/common/img/avatar-empty.png", "description":"Hola tengo un problema...", "isLocal":"1"},
-      {"name":"Central", "icon":"https://cdn.schd.ws/common/img/avatar-empty.png", "description":"Cuentame! Estamos aquí para ayudarte!", "isLocal":"0"},
-      {"name":"Usuario 1", "icon":"https://cdn.schd.ws/common/img/avatar-empty.png", "description":"La persona no estaba en la casa...", "isLocal":"1"}
-    ];
-  }
+  , private chatService: chatService){}
 
   ionViewDidEnter(){
-    //this.storage = new Storage(SqlStorage);
-
+    
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){
         this.auxiliar = JSON.parse(auxiliar.toString());
-        //this.auxNomCompleto = this.auxiliar.NomCompleto
-        if(this.socket){
-          this.socket.emit('JoinRoom', this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
-        }
-      
+        
+        this.chatService.joinRoom(this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
+
         this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar).subscribe((messageChat) =>{
                                   this.arrayMessageChat = messageChat;
                                   this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
@@ -78,6 +48,20 @@ export class chatPage {
     error =>{
       console.log(error);
     });
+
+    //EVENT MESSAGE FROM ROOM
+    this.chatService.newMessage.subscribe( m => {            
+            if (m != null) {
+                //m.isLoading = false;
+                this.arrayMessageChat.push(m);
+
+                setTimeout(() => {
+                  this.scrollTo(); 
+                });
+            }
+            }, (e) => console.log(e)
+        );
+
   }
 
   classIcon(message){
@@ -90,37 +74,30 @@ export class chatPage {
     return classes;
   };
 
-  addMessage(message){
+  addMessage(msg){
     if(this.textImput != ""){
       this.storage.get('auxiliar').then((auxiliar) =>{
           if(auxiliar != "" && auxiliar != undefined){   
             this.auxiliar = JSON.parse(auxiliar.toString());
 
-            
-            //this.messageChat = messageChat("", "", "", "", "", "", "", "")
-            this.messageChat.dateMessage = this.getCurrentDateString(); //yyyy.toString() + "/" + mm_str + "/" + dd_str + " " + hh.toString() + ":" + min.toString() + ":" + ss.toString() //"2016/10/24 00:00:00"
-            this.messageChat.message = message;
-            this.messageChat.sendedByAux_ID = this.auxiliar.DNIAuxiliar;
-            this.messageChat.sendedByName = 'Usuario 1';
-            this.messageChat.sendedByMe = 'True'
-          
-            this.chatService.nuevoMessage(this.messageChat.dateMessage, this.messageChat.message, this.auxiliar.DNIAuxiliar, this.messageChat.sendedByName, this.messageChat.sendedByMe).subscribe((res) =>{
-                                      if(res[0] != "" && res != undefined){
-                                          this.arrayMessageChat.push(this.messageChat)
-                                      }
-                                      this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
-                                      if(this.socket){
-                                          //this.socket.emit('chat message', message);
-                                          //this.socket.emit('chat message', this.messageChat);
-                                          this.socket.emit('SendMessage', this.messageChat, this.auxiliar.DNIAuxiliar);
-                                      }
-                                      this.textImput = "";
-                                      this.scrollTo();  
-                                    },
-                                    error => {
-                                        this.showAlert("Error", "No existen mensajes", "Aceptar");
-                                    });
+            let message = new MessageChat({
+                sendedByAux_ID: this.auxiliar.DNIAuxiliar,         
+                sendedByName: 'Usuario 1',
+                dateMessage: this.getCurrentDateString(),
+                sendedByMe: true,
+                message: msg
+            });
 
+            this.chatService.nuevoMessage(message)
+                .subscribe((res) => {
+                  this.arrayMessageChat.push(message);
+                  this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
+                  this.textImput = "";
+                  this.scrollTo(); 
+                },
+                error => {
+                    this.showAlert("Error", "No existen mensajes", "Aceptar");
+                });
           }
         },
         error =>{
@@ -128,65 +105,6 @@ export class chatPage {
         });
       }
     }
-
-  /*addMessage(message){
-    if(this.textImput != ""){
-      this.messagesChat.push(
-        {"name":"Usuario 1", "icon":"https://cdn.schd.ws/common/img/avatar-empty.png", "description":message, "isLocal":"1"}
-      );
-      if(this.socket){
-          this.socket.emit('chat message', message);
-       }
-      this.textImput = "";
-    }
-  }*/
-
-  //public socketJoin(idRoom, token): Boolean {//SERVER 2
-  public socketJoin(): Boolean {//SERVER 2
-     try {
-       //this.socket = io.connect('http://192.168.1.76:9898');
-       this.socket = io.connect('http://52.40.216.64:8086');
-     } catch (error) {
-       console.error("Error SocketJoin",error)
-     } finally{
-       if(this.socket){
-          this.socket.on('connect', () => {
-            //this.socket.emit('add_room', this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
-          this.socket.on('NewMessage', (msg) => {
-
-            /*this.messageChat.dateMessage = this.getCurrentDateString();
-            this.messageChat.message = msg;
-            this.messageChat.sendedByAux_ID = this.auxiliar.DNIAuxiliar;
-            this.messageChat.sendedByName = 'Central';
-            this.messageChat.sendedByMe = '0'
-            this.arrayMessageChat.push(this.messageChat);*/
-
-
-            /*this.messagesChat.push(
-              {"name":"Central", "icon":"https://cdn.schd.ws/common/img/avatar-empty.png", "description":msg, "isLocal":"0"}
-            );*/
-
-            if(msg.sendedByMe == "False"){
-              this.arrayMessageChat.push(msg);
-              this.scrollTo(); 
-            }
-            console.log("authenticated");
-          });
-
-          
-          //this.socket.emit('create', idRoom);
-          //this.initUsersStreams();
-          //this.initMessagesStreams();
-
-
-          //this.initLoggedInUser();
-        });
-        return true;
-       }else{
-        return false;
-       }       
-     }
-  }
 
   showAlert(title, subTitle, okButton){
       let alert = this.alertCtrl.create({
