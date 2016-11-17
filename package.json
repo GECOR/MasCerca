@@ -52,7 +52,6 @@
     }
   ],
   "cordovaPlatforms": [
-    "ios",
     "android"
   ],
   "description": "MasCerca: An Ionic project"
