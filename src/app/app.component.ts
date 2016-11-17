@@ -94,7 +94,7 @@ export class MyApp {
           this.push.on('notification', (data) => {
             console.log(data);       
 
-            this.push.setApplicationIconBadgeNumber(function() {
+            this.push.setApplicationIconBadgeNumber(() => {
               console.log('success');
             }, function() {
               console.log('error');
