@@ -1,5 +1,5 @@
 import {Component, NgZone} from '@angular/core';
-import {NavController, ModalController, ActionSheetController, AlertController } from 'ionic-angular';
+import {NavController, ModalController, ActionSheetController, AlertController, LoadingController } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import {GalleryModalPage} from './../galleryModal/galleryModal';
@@ -28,6 +28,7 @@ export class IncidenciaPage {
   listUsuarioSelect: any;
   listTipoSelect: any;
   Obs: any;
+  loading: any;
 
   constructor(private navController: NavController
   , private _ngZone: NgZone
@@ -36,7 +37,8 @@ export class IncidenciaPage {
   , public modalCtrl: ModalController
   , public storage: Storage
   , public actionSheetCtrl: ActionSheetController
-  , private incidenciaService: incidenciaService) {
+  , private incidenciaService: incidenciaService
+  , public loadingCtrl: LoadingController) {
     this.images = ["", "", "", ""];
     this.uploadingImages = [false, false, false, false];
   }
@@ -48,7 +50,7 @@ export class IncidenciaPage {
         this.auxiliar = JSON.parse(auxiliar.toString());
 
         //refrescar USUARIOS
-        this.storage.get('usuarios').then((usuarios) =>{
+        //this.storage.get('usuarios').then((usuarios) =>{
             this.storage.get('usuarios').then((usuarios) =>{
               if(usuarios != "" && usuarios != undefined){        
                 this.arrayUsuarios = JSON.parse(usuarios.toString());
@@ -65,10 +67,10 @@ export class IncidenciaPage {
           error =>{
             console.log(error);
           });
-        },
+        /*},
         error =>{
           console.log(error);
-        });
+        });*/
 
         //refrescar TIPOS
         this.storage.get('tipos').then((tipos) =>{
@@ -100,15 +102,6 @@ export class IncidenciaPage {
     });
   }
 
-  doAlert() {
-    let alert = this.alertCtrl.create({
-      title: 'Incidencia enviada correctamente!',
-      subTitle: 'Tu incidencia ha sido enviada correctamente.',
-      buttons: ['OK']
-    });
-    alert.present();
-  };
-
   sendIncentAndPhotos(){
     if(this.auxiliar != undefined){
       
@@ -128,22 +121,44 @@ export class IncidenciaPage {
         let MotivoIncidencia = this.listTipoSelect; //this.arrayTipos[this.listTipoSelect].CodigoMotivo;
         let Observaciones = this.Obs;
 
+        this.loading = this.loadingCtrl.create({
+          content: 'Enviando incidencia...'
+        });
+
+        this.loading.onDidDismiss((RegIncPresSAD_ID_Inserted) => {
+          if (RegIncPresSAD_ID_Inserted > 0){
+            let alert = this.alertCtrl.create({
+              title: 'Incidencia enviada correctamente!',
+              subTitle: 'Tu incidencia ha  enviada correctamente con ID: ' + RegIncPresSAD_ID_Inserted,
+              buttons: ['OK']
+            });
+            alert.present();
+          }else{
+            let alert = this.alertCtrl.create({
+              title: 'Error!',
+              subTitle: 'Ha ocurrido un error.',
+              buttons: ['OK']
+            });
+            alert.present();
+          }          
+        });
+
+        this.loading.present();
+
 
         this.incidenciaService.nuevaIncidencia(DNIAuxiliar, Auxiliar, Fecha_Incidencia, Hora_Incidencia, Usuario_ID, Usuario, MotivoIncidencia, Observaciones).subscribe((ID_inserted) =>{
-                                  if(ID_inserted.RegIncPresSAD_ID_Inserted =! 0){
-                                    //this.doAlert();
+                                  console.log(ID_inserted[0].RegIncPresSAD_ID_Inserted);
+                                  if(ID_inserted[0].RegIncPresSAD_ID_Inserted > 0){
 
-                                    if(this.sendPhoto(DNIAuxiliar, this.images[0], ID_inserted.RegIncPresSAD_ID_Inserted)){
-                                      this.doAlert();
-                                    }
-
+                                    this.sendPhoto(DNIAuxiliar, 0, ID_inserted[0].RegIncPresSAD_ID_Inserted);
+                                    
                                     /*for(let i = 0; i < this.images.length; ++i) {
-                                      if(this.sendPhoto(DNIAuxiliar, this.images[i], ID_inserted[0].RegIncPresSAD_ID_Inserted)){
-                                        this.uploadingImages[i] = true;
-                                      }else{
-                                        this.showAlert("Error", "Imagen no enviada", "Aceptar");
-                                        this.uploadingImages[i] = false;
-                                      }
+                                        if(this.sendPhoto(DNIAuxiliar, this.images[i], ID_inserted[0].RegIncPresSAD_ID_Inserted, loading)){
+                                          this.uploadingImages[i] = true;
+                                        }else{
+                                          this.showAlert("Error", "Imagen no enviada", "Aceptar");
+                                          this.uploadingImages[i] = false;
+                                        }
                                     }*/
 
                                   }else{
@@ -157,19 +172,37 @@ export class IncidenciaPage {
       }
   }
 
-    sendPhoto(DNIAuxiliar, photoBase64, RegIncPresSAD_ID_Inserted): Boolean{
-      let respuesta: boolean;
-      this.incidenciaService.guardarFotoBase64(DNIAuxiliar, photoBase64, RegIncPresSAD_ID_Inserted).subscribe((ID_inserted) =>{
-                                    if(ID_inserted.rutaFoto =! ""){
-                                      respuesta = true;
-                                    }else{
-                                      respuesta = false;
-                                    }
-                                  },
-                                  error => {
-                                      respuesta = false;
-                                  })
-      return respuesta;
+    sendPhoto(DNIAuxiliar, id, RegIncPresSAD_ID_Inserted){
+      console.log("id - "+ id);
+      if (this.images[id] != ""){
+        this.incidenciaService.guardarFotoBase64(DNIAuxiliar, this.images[id], RegIncPresSAD_ID_Inserted).subscribe((ID_inserted) =>{
+          console.log(ID_inserted);
+          /*if(ID_inserted.rutaFoto =! ""){
+            this.uploadingImages[id] = true;
+          }else{
+            this.uploadingImages[id] = false;
+          }*/
+          if (id + 1 < this.images.length){
+            console.log("uno");
+            this.sendPhoto(DNIAuxiliar, id + 1, RegIncPresSAD_ID_Inserted)
+          } else{
+            console.log("dos");
+            this.loading.dismiss(RegIncPresSAD_ID_Inserted);
+          }
+        },
+        error => {
+            //this.uploadingImages[id] = false;
+        })
+      }else{
+        if (id + 1 < this.images.length){
+          console.log("uno");
+          this.sendPhoto(DNIAuxiliar, id + 1, RegIncPresSAD_ID_Inserted)
+        } else{
+          console.log("dos");
+          this.loading.dismiss(RegIncPresSAD_ID_Inserted);
+        }
+      }
+      
     }
 
   openGallery(){
@@ -200,7 +233,6 @@ export class IncidenciaPage {
                     if (results.length > 0){
                       this.utils.resizeImage(results[0], 1024, 768).then((imgResized) => {
                         //this.uploadImage(imgResized, id);
-                        console.log(imgResized);
                         this._ngZone.run(() => {
                           this.images[id] = imgResized;
                         });

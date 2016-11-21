@@ -8,5 +8,10 @@ export interface Auxiliar {
         TipoAux: string,
         e_mail: string,
         NomCompleto: string,
-        AreaPertenencia: string
+        AreaPertenencia: string,
+        UltimaVisita:{
+                VisitaID: string,
+                EoS: string,
+                Usuario_ID: string
+        }
 }

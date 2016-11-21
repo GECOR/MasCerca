@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavParams, AlertController } from 'ionic-angular';
+import { NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { NgClass } from '@angular/common';
 import { UtilsProvider } from './../../providers/utils';
@@ -24,9 +24,27 @@ export class chatPage {
   , public alertCtrl: AlertController
   , public utils: UtilsProvider
   , public storage: Storage
-  , private chatService: chatService){}
+  , private chatService: chatService
+  , public loadingCtrl: LoadingController){}
 
   ionViewDidEnter(){
+
+    let loading = this.loadingCtrl.create({
+      content: 'Entrando...'
+    });
+
+    loading.onDidDismiss((messageChat) => {
+      if (messageChat == null){
+        this.showAlert("Error", "No existen mensajes", "Aceptar");
+      }else{
+        this.arrayMessageChat = messageChat;
+        this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
+        this.scrollTo();
+      }
+      
+    });
+
+    loading.present();
     
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){
@@ -35,12 +53,10 @@ export class chatPage {
         this.chatService.joinRoom(this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
 
         this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar).subscribe((messageChat) =>{
-                                  this.arrayMessageChat = messageChat;
-                                  this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
-                                  this.scrollTo(); 
+                                  loading.dismiss(messageChat);
                                 },
                                 error => {
-                                    this.showAlert("Error", "No existen mensajes", "Aceptar");
+                                  loading.dismiss(null);                                  
                                 });
 
       }
