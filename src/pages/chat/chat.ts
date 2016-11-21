@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavParams, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { NgClass } from '@angular/common';
+import { Observable } from 'rxjs';
 import { UtilsProvider } from './../../providers/utils';
 import { MessageChat } from './models';
 import { Auxiliar } from './../login/loginInterface';
@@ -16,7 +17,7 @@ export class chatPage {
   messagesChat = [];
   textImput = "";
   auxiliar: Auxiliar;
-  arrayMessageChat: Array<MessageChat>;
+  arrayMessageChat: Array<MessageChat>; //Observable<Array<MessageChat>>;//
 
   @ViewChild('chatContent') content;
 
@@ -34,20 +35,31 @@ export class chatPage {
         
         this.chatService.joinRoom(this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
 
+        //this.arrayMessageChat = this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar);
+        //this.arrayMessageChat.combineLatest(this.chatService.newMessage.asObservable());
+        //this.arrayMessageChat.subscribe((messages) =>{
+          //console.log("NewData to this.arrayMessageChat");
+          //console.log(messages);
+        //})
+
+        
         this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar).subscribe((messageChat) =>{
                                   this.arrayMessageChat = messageChat;
-                                  this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
+                                  this.storage.set('messageChat', this.arrayMessageChat);
                                   this.scrollTo(); 
                                 },
                                 error => {
                                     this.showAlert("Error", "No existen mensajes", "Aceptar");
                                 });
+                                
 
       }
     },
     error =>{
       console.log(error);
     });
+
+    
 
     //EVENT MESSAGE FROM ROOM
     this.chatService.newMessage.subscribe( m => {            
@@ -91,7 +103,8 @@ export class chatPage {
             this.chatService.nuevoMessage(message)
                 .subscribe((res) => {
                   this.arrayMessageChat.push(message);
-                  this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
+                  this.storage.set('messageChat', this.arrayMessageChat);
+                  
                   this.textImput = "";
                   this.scrollTo(); 
                 },

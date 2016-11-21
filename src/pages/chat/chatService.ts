@@ -77,7 +77,7 @@ export class chatService {
         
         return this.http.post(urlGecorApi + 'Messages/getMessagesFromAux', body, options) //urlGecorApi + 'Auxiliares/loginAuxiliar'
                         .map(res => <Array<MessageChat>> res.json())
-                        .do(res => <Array<MessageChat>> res) // eyeball results in the console
+                        //.do(res => <Array<MessageChat>> res) // eyeball results in the console
                         .catch(this.handleError)
                     
     }
@@ -95,7 +95,7 @@ export class chatService {
                                 if(res[0] != "" && res != undefined){
                                     this.sendMessage(msg, msg.sendedByAux_ID);
                                    
-                                    return msg;
+                                    //return msg;
                                 }
                             })
                         //.do(res =>  <any> res) // eyeball results in the console
