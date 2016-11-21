@@ -127,6 +127,7 @@ export class IncidenciaPage {
 
         this.loading.onDidDismiss((RegIncPresSAD_ID_Inserted) => {
           if (RegIncPresSAD_ID_Inserted > 0){
+            this.clearForm();
             let alert = this.alertCtrl.create({
               title: 'Incidencia enviada correctamente!',
               subTitle: 'Tu incidencia ha  enviada correctamente con ID: ' + RegIncPresSAD_ID_Inserted,
@@ -291,6 +292,16 @@ export class IncidenciaPage {
       buttons: [okButton]
     });
     alert.present();
+  }
+
+  clearForm(){
+    this.listUsuarioSelect = undefined;
+    this.listTipoSelect = undefined;
+    this.DateIni = undefined;
+    this.HourIni = undefined;
+    this.Obs = "";
+    this.images = ["", "", "", ""];
+    this.uploadingImages = [false, false, false, false];
   }
   
 }

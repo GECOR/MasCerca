@@ -66,7 +66,7 @@ export class chatPage {
     });
 
     //EVENT MESSAGE FROM ROOM
-    this.chatService.newMessage.subscribe( m => {            
+    this.chatService.newMessage.subscribe( m => {
             if (m != null) {
                 //m.isLoading = false;
                 this.arrayMessageChat.push(m);
