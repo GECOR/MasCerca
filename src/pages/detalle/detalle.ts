@@ -174,7 +174,8 @@ export class detallePage {
 
     itemTapped(item) {
         this.navController.push(IncidenciaPage, {
-            item: item
+            item: item,
+            id_cliente: this.cargaCuadrante.id_cliente
         });
     }
 

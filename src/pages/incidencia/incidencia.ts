@@ -1,14 +1,14 @@
-import {Component, NgZone} from '@angular/core';
-import {NavController, ModalController, ActionSheetController, AlertController, LoadingController } from 'ionic-angular';
+import { Component, NgZone } from '@angular/core';
+import { NavController, ModalController, ActionSheetController, AlertController, LoadingController, NavParams } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
-import {GalleryModalPage} from './../galleryModal/galleryModal';
-import {Geolocation, Camera, ImagePicker} from 'ionic-native';
-import {UtilsProvider} from './../../providers/utils';
-import {Usuario} from './../detalle/detalleInterface'
-import {Tipo} from './../incidencia/incidenciaInterface'
-import {Auxiliar} from './../login/loginInterface';
-import {incidenciaService} from './incidenciaService'
+import { GalleryModalPage } from './../galleryModal/galleryModal';
+import { Geolocation, Camera, ImagePicker } from 'ionic-native';
+import { UtilsProvider } from './../../providers/utils';
+import { Usuario } from './../detalle/detalleInterface'
+import { Tipo } from './../incidencia/incidenciaInterface'
+import { Auxiliar } from './../login/loginInterface';
+import { incidenciaService } from './incidenciaService'
 
 @Component({
   templateUrl: 'incidencia.html',
@@ -23,14 +23,15 @@ export class IncidenciaPage {
   auxiliar: Auxiliar;
   arrayUsuarios: Array<Usuario>;
   arrayTipos: Array<Tipo>;
-  DateIni: any;
-  HourIni: any;
+  DateIni: String = new Date().toISOString();
+  HourIni: String = new Date().toISOString();
   listUsuarioSelect: any;
   listTipoSelect: any;
   Obs: any;
   loading: any;
 
   constructor(private navController: NavController
+  , private params: NavParams
   , private _ngZone: NgZone
   , public utils: UtilsProvider
   , public alertCtrl: AlertController
@@ -39,12 +40,19 @@ export class IncidenciaPage {
   , public actionSheetCtrl: ActionSheetController
   , private incidenciaService: incidenciaService
   , public loadingCtrl: LoadingController) {
+
+    if(params.get("id_cliente"))
+      this.listUsuarioSelect = params.get("id_cliente");
+
     this.images = ["", "", "", ""];
     this.uploadingImages = [false, false, false, false];
   }
 
   ionViewDidEnter(){
-   
+    
+    //this.DateIni = new Date();
+   //this.HourIni 
+
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){        
         this.auxiliar = JSON.parse(auxiliar.toString());
@@ -213,6 +221,30 @@ export class IncidenciaPage {
     //});     
      galleryModal.present();
   };
+
+  alertTakePhoto(id){
+    let alert = this.alertCtrl.create({
+      title: 'Aviso',
+      message: 'Prohibido fotografiar a las personas',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.takePhoto(id);
+            console.log('Buy clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
 
   takePhoto(id){
     let actionSheet = this.actionSheetCtrl.create({
