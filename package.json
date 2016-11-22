@@ -42,6 +42,7 @@
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-image-picker",
     "cordova-sqlite-storage",
+    "phonegap-plugin-push",
     {
       "locator": "https://github.com/uiktiomasfeliz/cordova-plugin-camera.git",
       "id": "cordova-plugin-camera"

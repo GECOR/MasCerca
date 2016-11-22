@@ -92,7 +92,7 @@ export class MyApp {
 
           });
           this.push.on('notification', (data) => {
-            console.log(data);       
+            //console.log(data);       
 
             this.push.setApplicationIconBadgeNumber(() => {
               console.log('success');

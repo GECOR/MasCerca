@@ -1,5 +1,5 @@
 import { Component, forwardRef, NgZone } from '@angular/core';
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, AlertController, Platform, LoadingController } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import { TabsPage } from './../tabs/tabs';
@@ -21,20 +21,38 @@ export class LoginPage {
     , private platform: Platform
     , public alertCtrl: AlertController
     , public storage: Storage
-    , private loginService: LoginService) {
+    , private loginService: LoginService
+    , public loadingCtrl: LoadingController) {
 
       
     }
 
-    loginAuxiliar() {         
+    loginAuxiliar() {
+
+      let loading = this.loadingCtrl.create({
+        content: 'Entrando...'
+      });
+
+      loading.onDidDismiss((auxiliar) => {
+        console.log(auxiliar);
+        if(auxiliar == null){
+          this.showAlert("Error", "No existe el usuario", "Aceptar");
+        }else{
+          this.auxiliar = auxiliar;
+          this.comprobarAuxiliar();
+        }
+        
+      });
+
+      loading.present();
+
       this.loginService.loginAuxiliar(this.dni.trim())
                       .subscribe(
-                          (auxiliar) =>{                                    
-                              this.auxiliar = auxiliar;
-                              this.comprobarAuxiliar();
+                          (auxiliar) =>{
+                            loading.dismiss(auxiliar);    
                           },
                           error => {
-                              this.showAlert("Error", "No existe el usuario", "Aceptar");
+                            loading.dismiss(null);                             
                           });
         
     }

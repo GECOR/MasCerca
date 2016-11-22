@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, AlertController } from 'ionic-angular';
+import {NavController, AlertController, LoadingController } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import {UtilsProvider} from './../../providers/utils';
@@ -25,24 +25,42 @@ export class SemanalPage {
   , public utils: UtilsProvider
   , public alertCtrl: AlertController
   , public storage: Storage
-  , private semanalService: semanalService) {
+  , private semanalService: semanalService
+  , public loadingCtrl: LoadingController) {
 
     this.cargaCuadrante = new Array
 
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando cuadrante...'
+    });
+
+    loading.onDidDismiss((cargaCuadrante) => {
+      console.log(cargaCuadrante);
+      if(cargaCuadrante == null){
+        this.showAlert("Error", "No existe el usuario", "Aceptar");
+      }else{
+        this.cargaCuadrante = cargaCuadrante;
+        this.storage.set('cargaCuadrante', JSON.stringify(this.cargaCuadrante));
+        this.generateArrayDiasOrder();
+      }
+      
+    });
+
+    loading.present();
 
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){        
         this.auxiliar = JSON.parse(auxiliar.toString());
         this.semanalService.getCargaCuadrante(this.auxiliar.DNIAuxiliar, "null").subscribe(
-                          (cargaCuadrante) =>{                                    
-                              this.cargaCuadrante = cargaCuadrante;
-                              this.storage.set('cargaCuadrante', JSON.stringify(this.cargaCuadrante));
-                              this.generateArrayDiasOrder();
+                          (cargaCuadrante) =>{
+                              loading.dismiss(cargaCuadrante);
                           },
                           error => {
-                              this.showAlert("Error", "No existe el usuario", "Aceptar");
+                              loading.dismiss(null);
                           });
-      }                       
+      }else{
+        loading.dismiss(null);
+      }                      
     },
     error =>{
       console.log(error);

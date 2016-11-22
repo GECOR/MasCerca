@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, AlertController } from 'ionic-angular';
+import {NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import {IncidenciaPage} from '../incidencia/incidencia';
@@ -15,8 +15,7 @@ import {GeolocationProvider} from './../../providers/geolocation';
 })
 export class detallePage {
     item: any;
-    boolEntra = false;
-    tituloBtn = "Entrar";
+    boolEntra = true;
     listTask = [];
     boolEIC = false;
     cargaCuadrante: CargaCuadrante;
@@ -30,7 +29,8 @@ export class detallePage {
      , public alertCtrl: AlertController
      , public storage: Storage
      , private detalleService: detalleService
-     , private geo: GeolocationProvider){
+     , private geo: GeolocationProvider
+     , public loadingCtrl: LoadingController){
 
 
         // userParams is an object we have in our nav-parameters
@@ -46,40 +46,39 @@ export class detallePage {
         }else if(this.item.EIC == 1){
             this.boolEIC = true;
         }*/
-        console.log(this.listTask);
-        console.log(this.params.get('item'));
-    }
-
-    ionViewDidEnter(){
-
-        this.initGeolocation();
+        //console.log(this.listTask);
+        //console.log(this.params.get('item'));
 
         this.storage.get('auxiliar').then((auxiliar) =>{
-        if(auxiliar != "" && auxiliar != undefined){        
-            this.auxiliar = JSON.parse(auxiliar.toString());
-        }
-
+            console.log(JSON.parse(auxiliar.toString()));
+            if(auxiliar != "" && auxiliar != undefined){        
+                this.auxiliar = JSON.parse(auxiliar.toString());
+                if (this.auxiliar.UltimaVisita != undefined){
+                    if (this.auxiliar.UltimaVisita.Usuario_ID == this.cargaCuadrante.id_cliente && this.auxiliar.UltimaVisita.EoS == "E"){
+                        this.boolEntra = false;
+                    }
+                }
+            }
         },
         error =>{
         console.log(error);
         });
     }
 
-    switchEntra(){
-        if(this.boolEntra){
-            this.boolEntra = false;
-            this.tituloBtn = "Entrar";
+    ionViewDidEnter(){
+        this.initGeolocation();        
+    }
+
+    switchEntra(eos){
+        this.boolEntra = !eos;
+        if(eos){
             this.enviarVisita("E");
         }else{
-            this.boolEntra = true;
-            this.tituloBtn = "Salir";
             this.enviarVisita("S");
         }
-
-        console.log(this.boolEntra);
     };
 
-    classEntra(){
+    /*classEntra(){
         let classes = '';
         if(this.boolEntra){
             classes += ' secondary round';
@@ -88,25 +87,49 @@ export class detallePage {
         }
 
         return classes;
-    };
+    };*/
 
     enviarVisita(eos) {
+
         let DNIAuxiliar = this.auxiliar.DNIAuxiliar;
         let FechaVisita = this.getCurrentDateString();
         let EoS = eos;
         let Usuario_ID = this.cargaCuadrante.id_cliente;        
-        let Latitud = this.latLng.lat();//"1";
-        let Longitud = this.latLng.lng(); //"1";
+        let Latitud = this.latLng == undefined ? 0 : this.latLng.lat();//"1";
+        let Longitud = this.latLng == undefined ? 0 : this.latLng.lng();//"1";
+
+        let loading = this.loadingCtrl.create({
+            content: 'Enviando visita...'
+        });
+
+        loading.onDidDismiss((VisitaID_inserted) => {
+            console.log(VisitaID_inserted);
+            if(VisitaID_inserted == null){
+                this.showAlert("Error", "Visita no enviada", "Aceptar");
+            }else{
+                if(VisitaID_inserted.VisitaID =! 0){
+                    this.auxiliar.UltimaVisita = {
+                        VisitaID: VisitaID_inserted[0].ID,
+                        EoS: eos,
+                        Usuario_ID: Usuario_ID
+                    };
+                    console.log(this.auxiliar);
+                    this.storage.set('auxiliar', JSON.stringify(this.auxiliar));
+                    this.showAlert("Atencion!", "Visita enviada correctamente", "Aceptar");
+                }else{
+                    this.showAlert("Error!", "Visita no enviada", "Aceptar");
+                }
+            }        
+        });
+
+        loading.present();
+        
         this.detalleService.nuevaVisita(DNIAuxiliar, FechaVisita, EoS, Usuario_ID, Latitud, Longitud).subscribe((VisitaID_inserted) =>{
-                                  if(VisitaID_inserted.VisitaID =! 0){
-                                    this.showAlert("Atencion!", "Visita enviada correctamente", "Aceptar");
-                                  }else{
-                                    this.showAlert("Error!", "Incidencia no enviada", "Aceptar");
-                                  }
-                                },
-                                error => {
-                                    this.showAlert("Error", "Incidencia no enviada", "Aceptar");
-                                });
+            loading.dismiss(VisitaID_inserted);
+        },
+        error => {
+            loading.dismiss(null);
+        });
     }
 
     getCurrentDateString(): string {
