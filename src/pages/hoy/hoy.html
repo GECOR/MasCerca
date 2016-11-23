@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>  
     <ion-title class="toolbarTitle">
-      {{currentDate | date:'dd-MM-yyyy'}} - Hoy
+      {{currentDate | date:'dd-MM-yyyy'}} - {{currentDay}}
       <div class="subtitle">{{auxNomCompleto}}</div>
     </ion-title>
     <button ion-button class="toolbarButton" (click)="utils.alertLogOut()">

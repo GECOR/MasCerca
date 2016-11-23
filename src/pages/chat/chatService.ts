@@ -115,6 +115,10 @@ export class chatService {
         this.socket.emit(MessagingEvent[MessagingEvent.JoinRoom], oldRoom, actualRoom);
     }
 
+    forceDisconnect(room: string): void {        
+        this.socket.emit(MessagingEvent[MessagingEvent.ForceDisconnect], room);
+    }
+
     sendMessage(message: MessageChat, room: string): void {
         //let msg = JSON.stringify(message);
         this.socket.emit(MessagingEvent[MessagingEvent.SendMessage], message, room);

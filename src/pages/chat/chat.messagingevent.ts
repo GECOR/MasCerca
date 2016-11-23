@@ -8,4 +8,5 @@ export enum MessagingEvent {
     NewMessage,
     NewMessageFromNotifications,
     JoinRoom,
+    ForceDisconnect,
 }

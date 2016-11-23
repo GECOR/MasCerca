@@ -95,6 +95,11 @@ export class chatPage {
 
   }
 
+  ionViewWillLeave(){
+    console.log("ionViewWillLeave CHAT");
+    this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
+  }
+
   classIcon(message){
     let classes = '';
     if(message.isLocal == 1){

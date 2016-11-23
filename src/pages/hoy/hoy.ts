@@ -18,6 +18,7 @@ export class HoyPage {
 
   item: any;
   currentDate;
+  currentDay: string;
   auxNomCompleto;
   //storage: any;
   auxiliar: Auxiliar;
@@ -40,8 +41,13 @@ export class HoyPage {
     console.log(this.diaCompleto);
 
     this.item = this.params.get('item');
+    //console.log(this.item);
     if(this.item == null){
+      this.currentDay = "Hoy";
       this.item = {"Dia":this.diaCompleto, "Nombres": "Sin visitas", "DiaLetra":this.getDiaLetra()};
+    }else{
+      this.currentDate = ""
+      this.currentDay = this.item.Dia;
     }
 
   }
