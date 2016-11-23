@@ -46,7 +46,7 @@ export class HoyPage {
       this.currentDay = "Hoy";
       this.item = {"Dia":this.diaCompleto, "Nombres": "Sin visitas", "DiaLetra":this.getDiaLetra()};
     }else{
-      this.currentDate = ""
+      //this.currentDate = ""
       this.currentDay = this.item.Dia;
     }
 
