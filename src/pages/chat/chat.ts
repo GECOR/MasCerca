@@ -8,7 +8,6 @@ import { MessageChat } from './models';
 import { Auxiliar } from './../login/loginInterface';
 import { chatService } from './chatService';
 
-
 @Component({
   templateUrl: 'chat.html',
   providers: [UtilsProvider, chatService, Storage]
@@ -18,6 +17,7 @@ export class chatPage {
   textImput = "";
   auxiliar: Auxiliar;
   arrayMessageChat: Array<MessageChat>; //Observable<Array<MessageChat>>;//
+  loading: any;
 
   @ViewChild('chatContent') content;
 
@@ -26,32 +26,27 @@ export class chatPage {
   , public utils: UtilsProvider
   , public storage: Storage
   , private chatService: chatService
-  , public loadingCtrl: LoadingController){}
+  , public loadingCtrl: LoadingController){
 
-  ionViewDidEnter(){
-
-    let loading = this.loadingCtrl.create({
+     this.loading = this.loadingCtrl.create({
       content: 'Entrando...'
     });
 
-    loading.onDidDismiss((messageChat) => {
-      if (messageChat == null){
-        this.showAlert("Error", "No existen mensajes", "Aceptar");
-      }else{
-        this.arrayMessageChat = messageChat;
-        this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
-        this.scrollTo();
-      }
-      
-    });
+  }
 
-    loading.present();
-    
+  ionViewWillEnter(){
+     setTimeout(()=>{
+        this.loading.present();
+    });    
+  }
+
+  ionViewDidLoad(){
+      
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){
         this.auxiliar = JSON.parse(auxiliar.toString());
         
-        this.chatService.joinRoom(this.auxiliar.DNIAuxiliar, this.auxiliar.DNIAuxiliar);
+        this.chatService.joinRoom(undefined, this.auxiliar.DNIAuxiliar);
 
         //this.arrayMessageChat = this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar);
         //this.arrayMessageChat.combineLatest(this.chatService.newMessage.asObservable());
@@ -65,10 +60,10 @@ export class chatPage {
                                   this.arrayMessageChat = messageChat;
                                   this.storage.set('messageChat', this.arrayMessageChat);
                                   this.scrollTo(); 
-                                  loading.dismiss(messageChat);
+                                  this.loading.dismiss(messageChat);
                                 },
                                 error => {
-                                  loading.dismiss(null);                                  
+                                  this.loading.dismiss(null);                                  
                                 });
                                 
 
@@ -77,13 +72,30 @@ export class chatPage {
     error =>{
       console.log(error);
     });
+  }
 
-    
+  ionViewDidEnter(){   
 
+    this.loading.onDidDismiss((messageChat) => {
+      if (messageChat == null){
+        this.showAlert("Error", "No existen mensajes", "Aceptar");
+      }else{
+        this.arrayMessageChat = messageChat;
+        this.storage.set('messageChat', JSON.stringify(this.arrayMessageChat));
+        this.scrollTo();
+      }
+      
+    });
+     
     //EVENT MESSAGE FROM ROOM
     this.chatService.newMessage.subscribe( m => {
             if (m != null) {
                 //m.isLoading = false;
+                if(m.sendedByMe)
+                  m.sendedByMe = 'True';
+                else
+                  m.sendedByMe = 'False';
+
                 this.arrayMessageChat.push(m);
 
                 setTimeout(() => {
@@ -96,8 +108,8 @@ export class chatPage {
   }
 
   ionViewWillLeave(){
-    console.log("ionViewWillLeave CHAT");
-    this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
+    //console.log("ionViewWillLeave CHAT");
+    //this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
   }
 
   classIcon(message){
@@ -120,7 +132,7 @@ export class chatPage {
                 sendedByAux_ID: this.auxiliar.DNIAuxiliar,         
                 sendedByName: 'Usuario 1',
                 dateMessage: this.getCurrentDateString(),
-                sendedByMe: true,
+                sendedByMe: "True",
                 message: msg
             });
 

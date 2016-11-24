@@ -46,7 +46,9 @@ export class SemanalPage {
       
     });
 
-    loading.present();
+    setTimeout(()=>{
+        loading.present();
+    });
 
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){        

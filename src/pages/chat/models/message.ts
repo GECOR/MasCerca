@@ -17,6 +17,6 @@ export class MessageChat {
     this.m_checked        = obj && obj.m_checked        || undefined;
     this.info             = obj && obj.info             || undefined;
     this.sendedByName     = obj && obj.sendedByName     || undefined;
-    this.sendedByMe       = obj && obj.sendedByMe       || "True";
+    this.sendedByMe       = obj && obj.sendedByMe       || undefined;
   }
 }
