@@ -20,6 +20,7 @@ export class SemanalPage {
   auxiliar: Auxiliar;
   cargaCuadrante: Array<CargaCuadrante>;
   arrayDias = [];
+  public nota: string = undefined;
 
   constructor(private navController: NavController
   , public utils: UtilsProvider
@@ -35,13 +36,21 @@ export class SemanalPage {
     });
 
     loading.onDidDismiss((cargaCuadrante) => {
+      
+      console.log("CargaCuadrante");
       console.log(cargaCuadrante);
+
       if(cargaCuadrante == null){
         this.showAlert("Error", "No existe el usuario", "Aceptar");
       }else{
+        
+        if(cargaCuadrante[0].Nota)
+          this.nota = cargaCuadrante[0].Notas;
+        
         this.cargaCuadrante = cargaCuadrante;
         this.storage.set('cargaCuadrante', JSON.stringify(this.cargaCuadrante));
         this.generateArrayDiasOrder();
+
       }
       
     });
@@ -153,7 +162,8 @@ export class SemanalPage {
 
     itemTapped(item) {
       this.navController.push(HoyPage, {
-      item: item
+      item: item,
+      nota: this.nota
       });
   };
 }

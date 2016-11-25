@@ -12,6 +12,8 @@
 
 <ion-content padding class="home">
 
+  <mis-notas [nota]="nota"></mis-notas>
+
   <ion-card *ngFor="let cuadrante of arrayCargaCuadrante | filtroDia: item.DiaLetra" (click)="itemTapped(cuadrante)">
     <ion-card-header>
       <b>Hora</b> {{cuadrante.Hora}}

@@ -35,6 +35,7 @@ export class detallePage {
 
         // userParams is an object we have in our nav-parameters
         this.cargaCuadrante = this.params.get('item');
+        
         if(this.cargaCuadrante.subcategoria.indexOf(",")){
             this.listTask = this.cargaCuadrante.subcategoria.split(",");
         }else{

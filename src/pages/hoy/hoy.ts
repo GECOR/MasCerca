@@ -28,6 +28,7 @@ export class HoyPage {
   tempArrayCargaCuadrante: Array<CargaCuadrante>;
   arrayCargaCuadrante: Array<CargaCuadrante>;
   //private pages: any[];
+  nota: string;
 
   constructor(private navController: NavController
             , public utils: UtilsProvider
@@ -41,6 +42,8 @@ export class HoyPage {
     console.log(this.diaCompleto);
 
     this.item = this.params.get('item');
+    this.nota = this.params.get('nota');
+
     //console.log(this.item);
     if(this.item == null){
       this.currentDay = "Hoy";
