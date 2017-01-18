@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>  
     <ion-title class="toolbarTitle">
-      {{currentDate | date:'dd-MM-yyyy'}} - Hoy
+      {{currentDate | date:'dd-MM-yyyy'}} - {{currentDay}}
       <div class="subtitle">{{auxNomCompleto}}</div>
     </ion-title>
     <button ion-button class="toolbarButton" (click)="utils.alertLogOut()">
@@ -11,6 +11,8 @@
 </ion-header>
 
 <ion-content padding class="home">
+
+  <mis-notas [nota]="nota"></mis-notas>
 
   <ion-card *ngFor="let cuadrante of arrayCargaCuadrante | filtroDia: item.DiaLetra" (click)="itemTapped(cuadrante)">
     <ion-card-header>

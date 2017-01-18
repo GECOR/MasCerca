@@ -6,7 +6,7 @@ export class MessageChat {
   m_checked: string;
   info: string;
   sendedByName: string;
-  sendedByMe: boolean;
+  sendedByMe: string;
 
   constructor(obj?: any) {
     console.log("MessageChat "+ JSON.stringify(obj));
@@ -17,6 +17,6 @@ export class MessageChat {
     this.m_checked        = obj && obj.m_checked        || undefined;
     this.info             = obj && obj.info             || undefined;
     this.sendedByName     = obj && obj.sendedByName     || undefined;
-    this.sendedByMe       = obj && obj.sendedByMe       || false;
+    this.sendedByMe       = obj && obj.sendedByMe       || undefined;
   }
 }

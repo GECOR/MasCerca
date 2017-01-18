@@ -18,7 +18,7 @@
     "@angular/platform-browser-dynamic": "2.1.1",
     "@angular/platform-server": "2.1.1",
     "@ionic/storage": "1.1.6",
-    "ionic-angular": "2.0.0-rc.2",
+    "ionic-angular": "2.0.0-rc.3",
     "ionic-native": "2.2.3",
     "ionicons": "3.0.0",
     "rxjs": "5.0.0-beta.12",
@@ -50,6 +50,17 @@
     {
       "locator": "https://github.com/apache/cordova-plugin-splashscreen.git",
       "id": "cordova-plugin-splashscreen"
+    },
+    {
+      "locator": "https://github.com/dpa99c/phonegap-launch-navigator.git",
+      "id": "uk.co.workingedge.phonegap.plugin.launchnavigator"
+    },
+    {
+      "variables": {
+        "API_KEY_FOR_ANDROID": "AIzaSyAJKWeNuozdqUe35E2bqznODzqjdYDgy2k"
+      },
+      "locator": "cordova-plugin-googlemaps",
+      "id": "cordova-plugin-googlemaps"
     }
   ],
   "cordovaPlatforms": [

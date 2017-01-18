@@ -16,4 +16,5 @@ export interface CargaCuadrante {
     subcategoria: string;
     DiaSemana: string;
     NIVELENF: string;
+    Notas: string;
 }

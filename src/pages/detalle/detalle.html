@@ -7,7 +7,7 @@
 
 <ion-content padding class="getting-started">
 
-  <ion-card *ngIf="boolEIC" (click)="doAlert()">
+  <ion-card *ngIf="boolEIC" (click)="doAlert('Material necesario:','- Guantes dobles <br> - Mascarilla')">
       <ion-item class="cardEIC">
         <ion-icon name="alert" item-left></ion-icon>
         USUARIO CON EIC
@@ -29,6 +29,9 @@
 
     <ion-item>
         <ion-label><b>Dirección: </b> {{cargaCuadrante.Direccion}}</ion-label>
+        <ion-spinner *ngIf="!gotCoordsFromAddress && !errorCoordsFromAddress" item-right></ion-spinner>
+        <ion-icon *ngIf="gotCoordsFromAddress && !errorCoordsFromAddress" name="navigate" color="primary" item-right (click)="navigateTo()"></ion-icon>
+        <ion-icon *ngIf="errorCoordsFromAddress" name="alert" color="danger" item-right (click)="doAlert('Error:','No se encuentra la dirección.')"></ion-icon>
     </ion-item>
 
     <!--<ion-item>
@@ -36,7 +39,7 @@
     </ion-item>-->
 
     <ion-item>
-        <ion-label><b>Telefonos: </b> {{cargaCuadrante.NumTelf1}}</ion-label>
+        <ion-label><b>Telefonos: </b> {{cargaCuadrante.NumTelf1}}</ion-label>        
     </ion-item>
 
     </ion-list>

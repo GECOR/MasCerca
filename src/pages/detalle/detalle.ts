@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
-//import { NativeStorage } from 'ionic-native';
+import { LaunchNavigator, LaunchNavigatorOptions, Geolocation } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import {IncidenciaPage} from '../incidencia/incidencia';
 import {Usuario} from './detalleInterface';
@@ -23,6 +23,10 @@ export class detallePage {
     auxiliar: Auxiliar;
     latLng: any;
     location: any;
+    lat: any;
+    lng: any;
+    public gotCoordsFromAddress: boolean = false;
+    public errorCoordsFromAddress: boolean = false;
 
      constructor(private params: NavParams
      , private navController: NavController
@@ -35,6 +39,7 @@ export class detallePage {
 
         // userParams is an object we have in our nav-parameters
         this.cargaCuadrante = this.params.get('item');
+        
         if(this.cargaCuadrante.subcategoria.indexOf(",")){
             this.listTask = this.cargaCuadrante.subcategoria.split(",");
         }else{
@@ -95,8 +100,8 @@ export class detallePage {
         let FechaVisita = this.getCurrentDateString();
         let EoS = eos;
         let Usuario_ID = this.cargaCuadrante.id_cliente;        
-        let Latitud = this.latLng == undefined ? 0 : this.latLng.lat();//"1";
-        let Longitud = this.latLng == undefined ? 0 : this.latLng.lng();//"1";
+        let Latitud = this.latLng == undefined ? 0 : this.latLng.lat;//"1";
+        let Longitud = this.latLng == undefined ? 0 : this.latLng.lng;//"1";
 
         let loading = this.loadingCtrl.create({
             content: 'Enviando visita...'
@@ -162,27 +167,43 @@ export class detallePage {
     }
 
     initGeolocation(){
+        //cargaCuadrante.Direccion
+        this.geo.getLatLngFromDirection(this.cargaCuadrante.Direccion.replace(/[^A-Za-z0-9]/g, '')+", Málaga, España").then(location =>{
+            //console.log("DETALLE initGeolocation()");
+            //console.log(location);
+            if(location){
+                this.latLng = location;
+                this.gotCoordsFromAddress = true;
+                if(this.errorCoordsFromAddress) this.errorCoordsFromAddress = false;
+            }else{
+                this.errorCoordsFromAddress = true;
+            }
+        }); 
+        /*
         this.geo.getLocation().then(location =>{
-        this.location = location;
-        if (this.location.error){
-          this.latLng = new google.maps.LatLng(0, 0);
-        }else{        
-          this.latLng = this.location.latLng;
-        }
-      });  
+            this.location = location;
+            if (this.location.error){
+            this.latLng = new google.maps.LatLng(0, 0);
+            }else{        
+            this.latLng = this.location.latLng;
+            }
+        }); 
+        */
+      
     }
 
     itemTapped(item) {
         this.navController.push(IncidenciaPage, {
-            item: item
+            item: item,
+            id_cliente: this.cargaCuadrante.id_cliente
         });
     }
 
-    doAlert() {
+    doAlert(subtitle: string, message: string) {
     let alert = this.alertCtrl.create({
       title: 'Atención!',
-      subTitle: 'Material necesario:',
-      message: '- Guantes dobles <br> - Mascarilla',
+      subTitle: subtitle,//'Material necesario:',
+      message: message,//'- Guantes dobles <br> - Mascarilla',
       buttons: ['OK']
     });
     alert.present();
@@ -196,4 +217,17 @@ export class detallePage {
     });
     alert.present();
   }
+
+  navigateTo(){
+      LaunchNavigator.isAppAvailable(LaunchNavigator.APP.GOOGLE_MAPS).then((isAvaible) =>{
+          var app;
+          if(isAvaible)
+            app = LaunchNavigator.APP.GOOGLE_MAPS;
+          else
+            app = LaunchNavigator.APP.USER_SELECT;
+
+            LaunchNavigator.navigate([this.latLng.lat, this.latLng.lng],{app: app});
+      });
+  }
+
 }

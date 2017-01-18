@@ -18,6 +18,7 @@ export class HoyPage {
 
   item: any;
   currentDate;
+  currentDay: string;
   auxNomCompleto;
   //storage: any;
   auxiliar: Auxiliar;
@@ -27,6 +28,7 @@ export class HoyPage {
   tempArrayCargaCuadrante: Array<CargaCuadrante>;
   arrayCargaCuadrante: Array<CargaCuadrante>;
   //private pages: any[];
+  nota: string;
 
   constructor(private navController: NavController
             , public utils: UtilsProvider
@@ -40,8 +42,23 @@ export class HoyPage {
     console.log(this.diaCompleto);
 
     this.item = this.params.get('item');
+    this.nota = this.params.get('nota');
+
+    //console.log(this.item);
     if(this.item == null){
+
+      this.currentDay = "Hoy";
       this.item = {"Dia":this.diaCompleto, "Nombres": "Sin visitas", "DiaLetra":this.getDiaLetra()};
+      
+    }else{
+      //this.currentDate = ""
+      //console.log(this.days.indexOf(this.item.Dia) + " <=> "+ this.currentDate.getDay());
+      var dayToChange = this.days.indexOf(this.item.Dia)-this.currentDate.getDay();
+      console.log(dayToChange);
+
+      this.currentDate.setDate(this.currentDate.getDate() + dayToChange);
+      this.currentDay = this.item.Dia;
+
     }
 
   }
@@ -78,24 +95,30 @@ export class HoyPage {
     error =>{
       console.log(error);
     });
+
   }
 
   showAlert(title, subTitle, okButton){
+
       let alert = this.alertCtrl.create({
         title: title,
         subTitle: subTitle,
         buttons: [okButton]
       });
       alert.present();
+
   }
   
   itemTapped(item) {
+
       this.navController.push(detallePage, {
       item: item
       });
+
   };
 
   groupArray(){
+
     this.arrayCargaCuadrante = new Array<CargaCuadrante>();
     this.tempArrayCargaCuadrante = new HoyPipe().transform(this.tempArrayCargaCuadrante, this.item.DiaLetra); 
     this.tempArrayCargaCuadrante.forEach(element => {
@@ -108,9 +131,11 @@ export class HoyPage {
         this.arrayCargaCuadrante.push(element);
       }
     });
+
   }
 
   groupArray_old(){
+
     let idEncontrado = false;
     for (var x = 0; x < this.tempArrayCargaCuadrante.length; x++) {
       if(this.arrayCargaCuadrante != undefined){
@@ -132,9 +157,11 @@ export class HoyPage {
         idEncontrado = true;
       }
     }
+
   }
 
   getDiaLetra(){
+
     var diaLetra;
       switch(this.diaCompleto){
       case 'Lunes':
@@ -162,6 +189,39 @@ export class HoyPage {
         diaLetra = "L";
     }
     return diaLetra;
+
+  }
+
+  getLetraDia(data: string){
+
+    var diaLetra;
+      switch(data){
+      case 'L':
+        diaLetra = 'Lunes';
+        break;
+      case 'M':
+        diaLetra = 'Martes';
+        break;
+        case 'X':
+        diaLetra = 'Miercoles';
+        break;
+        case 'J':
+        diaLetra = "Jueves";
+        break;
+        case 'V':
+        diaLetra = "Viernes";
+        break;
+        case 'S':
+        diaLetra = "Sabado";
+        break;
+        case 'D':
+        diaLetra = "Domingo";
+        break;
+        default:
+        diaLetra = "Lunes";
+    }
+    return diaLetra;
+
   }
  
 }

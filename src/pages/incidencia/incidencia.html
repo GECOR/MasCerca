@@ -59,22 +59,22 @@
         <ion-row>
             <ion-col width-25 class="text-center">
             <ion-spinner item-left *ngIf="uploadingImages[0]"></ion-spinner>
-            <button ion-button (click)="takePhoto(0)" [hidden]="images[0] != '' || uploadingImages[0]" outline><ion-icon name="image"></ion-icon></button>
+            <button ion-button (click)="alertTakePhoto(0)" [hidden]="images[0] != '' || uploadingImages[0]" outline><ion-icon name="image"></ion-icon></button>
             <img [src]="images[0]" [hidden]="images[0] == '' || uploadingImages[0]" (click) = "openGallery()"/>
             </ion-col>
             <ion-col width-25 class="text-center">
             <ion-spinner item-left *ngIf="uploadingImages[1]"></ion-spinner>
-            <button ion-button (click)="takePhoto(1)" [hidden]="images[1] != '' || uploadingImages[1]" outline><ion-icon name="image"></ion-icon></button>
+            <button ion-button (click)="alertTakePhoto(1)" [hidden]="images[1] != '' || uploadingImages[1]" outline><ion-icon name="image"></ion-icon></button>
             <img [src]="images[1]" [hidden]="images[1] == '' || uploadingImages[1]" (click) = "openGallery()" />
             </ion-col>
             <ion-col width-25 class="text-center">
             <ion-spinner item-left *ngIf="uploadingImages[2]"></ion-spinner>
-            <button ion-button (click)="takePhoto(2)" [hidden]="images[2] != '' || uploadingImages[2]" outline><ion-icon name="image"></ion-icon></button>
+            <button ion-button (click)="alertTakePhoto(2)" [hidden]="images[2] != '' || uploadingImages[2]" outline><ion-icon name="image"></ion-icon></button>
             <img [src]="images[2]" [hidden]="images[2] == '' || uploadingImages[2]" (click) = "openGallery()" />
             </ion-col>
             <ion-col width-25 class="text-center">
             <ion-spinner item-left *ngIf="uploadingImages[3]"></ion-spinner>
-            <button ion-button (click)="takePhoto(3)" [hidden]="images[3] != '' || uploadingImages[3]" outline><ion-icon name="image"></ion-icon></button>
+            <button ion-button (click)="alertTakePhoto(3)" [hidden]="images[3] != '' || uploadingImages[3]" outline><ion-icon name="image"></ion-icon></button>
             <img [src]="images[3]" [hidden]="images[3] == '' || uploadingImages[3]" (click) = "openGallery()" />
             </ion-col>
         </ion-row>

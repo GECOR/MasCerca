@@ -11,6 +11,7 @@ import { HoyPipe } from '../pages/hoy/hoyPipe';
 import { IncidenciaPage } from '../pages/incidencia/incidencia';
 import { LoginPage } from '../pages/login/login';
 import { SemanalPage } from '../pages/semanal/semanal';
+import { NotasComponent } from '../pages/notas/notas';
 import { TabsPage } from '../pages/tabs/tabs';
 
 
@@ -25,7 +26,8 @@ import { TabsPage } from '../pages/tabs/tabs';
     IncidenciaPage,
     LoginPage,
     SemanalPage,
-    TabsPage
+    TabsPage,
+    NotasComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp)
