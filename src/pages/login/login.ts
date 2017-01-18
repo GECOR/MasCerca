@@ -46,14 +46,14 @@ export class LoginPage {
 
       loading.present();
 
-      this.loginService.loginAuxiliar(this.dni.trim())
+      /*this.loginService.loginAuxiliar(this.dni.trim())
                       .subscribe(
                           (auxiliar) =>{
                             loading.dismiss(auxiliar);    
                           },
                           error => {
                             loading.dismiss(null);                             
-                          });
+                          });*/
         
     }
 
