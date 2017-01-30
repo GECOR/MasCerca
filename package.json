@@ -44,7 +44,7 @@
     "cordova-sqlite-storage",
     "phonegap-plugin-push",
     {
-      "locator": "https://github.com/uiktiomasfeliz/cordova-plugin-camera.git",
+      "locator": "https://github.com/apache/cordova-plugin-camera.git",
       "id": "cordova-plugin-camera"
     },
     {

@@ -22,7 +22,8 @@ export class detallePage {
     //storage: any;
     auxiliar: Auxiliar;
     latLng: any;
-    location: any;
+    location: any = new google.maps.LatLng(0, 0);
+    locating: boolean = false;
     lat: any;
     lng: any;
     public gotCoordsFromAddress: boolean = false;
@@ -100,8 +101,7 @@ export class detallePage {
         let FechaVisita = this.getCurrentDateString();
         let EoS = eos;
         let Usuario_ID = this.cargaCuadrante.id_cliente;        
-        let Latitud = this.latLng == undefined ? 0 : this.latLng.lat;//"1";
-        let Longitud = this.latLng == undefined ? 0 : this.latLng.lng;//"1";
+        
 
         let loading = this.loadingCtrl.create({
             content: 'Enviando visita...'
@@ -128,13 +128,24 @@ export class detallePage {
         });
 
         loading.present();
-        
-        this.detalleService.nuevaVisita(DNIAuxiliar, FechaVisita, EoS, Usuario_ID, Latitud, Longitud).subscribe((VisitaID_inserted) =>{
-            loading.dismiss(VisitaID_inserted);
-        },
-        error => {
-            loading.dismiss(null);
+
+        this.geo.getLocation().then((location) => {
+            this.location = location;
+            this.locating = false;
+            console.log('User location ' + this.location);
+
+            let Latitud = this.location == undefined ? 0 : this.location.lat();//"1";
+            let Longitud = this.location == undefined ? 0 : this.location.lng();//"1";
+
+            this.detalleService.nuevaVisita(DNIAuxiliar, FechaVisita, EoS, Usuario_ID, Latitud, Longitud).subscribe((VisitaID_inserted) =>{
+                loading.dismiss(VisitaID_inserted);
+            },
+            error => {
+                loading.dismiss(null);
+            });
         });
+        
+        
     }
 
     getCurrentDateString(): string {
@@ -168,31 +179,30 @@ export class detallePage {
 
     initGeolocation(){
         //cargaCuadrante.Direccion
+
         this.geo.getLatLngFromDirection(this.cargaCuadrante.Direccion.replace(/[^A-Za-z0-9]/g, '')+", Málaga, España").then(location =>{
-            //console.log("DETALLE initGeolocation()");
-            //console.log(location);
-            if(location){
-                this.latLng = location;
-                this.gotCoordsFromAddress = true;
-                if(this.errorCoordsFromAddress) this.errorCoordsFromAddress = false;
-            }else{
-                this.errorCoordsFromAddress = true;
-            }
-        }); 
-        /*
-        this.geo.getLocation().then(location =>{
+                //console.log("DETALLE initGeolocation()");
+                //console.log(location);
+                if(location){
+                    this.latLng = location;
+                    this.gotCoordsFromAddress = true;
+                    if(this.errorCoordsFromAddress) this.errorCoordsFromAddress = false;
+                }else{
+                    this.errorCoordsFromAddress = true;
+                }
+            }); 
+        
+        //this.locating = true;
+        /*this.geo.getLocation().then((location) => {
             this.location = location;
-            if (this.location.error){
-            this.latLng = new google.maps.LatLng(0, 0);
-            }else{        
-            this.latLng = this.location.latLng;
-            }
-        }); 
-        */
+            this.locating = false;
+            console.log('User location ' + this.location);
+        }); */
+        
       
     }
 
-    itemTapped(item) {
+    itemTapped(item): void {
         this.navController.push(IncidenciaPage, {
             item: item,
             id_cliente: this.cargaCuadrante.id_cliente
