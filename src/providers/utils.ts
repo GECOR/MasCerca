@@ -77,7 +77,7 @@ export class UtilsProvider {
 
                 ctx.drawImage(img,0,0,iwScaled,ihScaled);
 
-                resolve(c.toDataURL("image/jpeg", 0.3));
+                resolve(c.toDataURL("image/jpeg", 1.0));
             };
         });
     }

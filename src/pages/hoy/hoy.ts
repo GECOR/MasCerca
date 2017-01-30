@@ -70,11 +70,10 @@ export class HoyPage {
         this.auxiliar = JSON.parse(auxiliar.toString());
         this.auxNomCompleto = this.auxiliar.NomCompleto
 
-        this.storage.get('cargaCuadrante').then((cargaCuadrante) =>{
+        /*this.storage.get('cargaCuadrante').then((cargaCuadrante) =>{
           if(cargaCuadrante != "" && cargaCuadrante != undefined){
             this.tempArrayCargaCuadrante = JSON.parse(cargaCuadrante.toString());
             this.groupArray();
-            //this.arrayCargaCuadrante = JSON.parse(cargaCuadrante.toString());
           }else{        
               this.semanalService.getCargaCuadrante(this.auxiliar.DNIAuxiliar, "null").subscribe((cargaCuadrante) =>{                                    
                                     this.tempArrayCargaCuadrante = cargaCuadrante;
@@ -88,7 +87,18 @@ export class HoyPage {
         },
         error =>{
           console.log(error);
-        });
+    });*/
+
+        this.semanalService.getCargaCuadrante(this.auxiliar.DNIAuxiliar, "null").subscribe((cargaCuadrante) =>{                                    
+                                    this.tempArrayCargaCuadrante = cargaCuadrante;
+                                    if(cargaCuadrante[0].Notas)
+                                      this.nota = cargaCuadrante[0].Notas;
+                                    this.storage.set('cargaCuadrante', JSON.stringify(this.tempArrayCargaCuadrante));
+                                    this.groupArray();
+                                },
+                                error => {
+                                    this.showAlert("Error", "No existe el usuario", "Aceptar");
+                                });
 
       }
     },

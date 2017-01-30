@@ -28,7 +28,10 @@ export class SemanalPage {
   , public storage: Storage
   , private semanalService: semanalService
   , public loadingCtrl: LoadingController) {
+    
+  }
 
+  ionViewWillEnter(){
     this.cargaCuadrante = new Array
 
     let loading = this.loadingCtrl.create({
@@ -44,7 +47,7 @@ export class SemanalPage {
         this.showAlert("Error", "No existe el usuario", "Aceptar");
       }else{
         
-        if(cargaCuadrante[0].Nota)
+        if(cargaCuadrante[0].Notas)
           this.nota = cargaCuadrante[0].Notas;
         
         this.cargaCuadrante = cargaCuadrante;

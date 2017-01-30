@@ -19,13 +19,16 @@ export class GeolocationProvider {
   constructor() {}
 
   locate() {
-    let options = {maximumAge: 5000, timeout: 15000, enableHighAccuracy: true};
+    let options = {maximumAge: 5000, timeout: 10000, enableHighAccuracy: false};
     /*navigator.geolocation*/
     return new Promise(resolve => {        
-        Geolocation.getCurrentPosition(options).then(position => { 
+        Geolocation.getCurrentPosition(options).then((position) => { 
+            resolve(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+
+
             //this.geocoderService = new google.maps.Geocoder;
 
-            let geoReq: GeocoderRequest = {
+            /*let geoReq: GeocoderRequest = {
                 position: {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -51,7 +54,7 @@ export class GeolocationProvider {
                 } else {
                     resolve("Not found");
                 }                
-            });
+        });*/
 
           //this.location.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
           //this.location.lat = position.coords.latitude;
@@ -75,11 +78,14 @@ export class GeolocationProvider {
             }*/
         //);
         
+        }).catch((error) => {
+            console.log('Error getting location', error);
+            resolve(new google.maps.LatLng(0,0));
         });
     });
   }
 
-  getLocation() {
+  getLocation(): any {
     return this.locate().then(location => {
       return location;
     });

@@ -23,11 +23,11 @@ export class IncidenciaPage {
   auxiliar: Auxiliar;
   arrayUsuarios: Array<Usuario>;
   arrayTipos: Array<Tipo>;
-  DateIni: String = new Date().toISOString();
-  HourIni: String = new Date().toISOString();
+  DateIni: string;
+  HourIni: string;
   listUsuarioSelect: any;
   listTipoSelect: any;
-  Obs: any;
+  Obs: string = "";
   loading: any;
 
   constructor(private navController: NavController
@@ -46,6 +46,15 @@ export class IncidenciaPage {
 
     this.images = ["", "", "", ""];
     this.uploadingImages = [false, false, false, false];
+
+    var _d = new Date(new Date().toLocaleString());
+    this.DateIni = _d.getFullYear() + '-' + this.pad(_d.getMonth() + 1) + '-' + this.pad(_d.getDate()) + 'T' 
+    + this.pad(_d.getHours()) + ':' + this.pad(_d.getMinutes()) + ':00.000';
+    this.HourIni = this.DateIni;
+  }
+
+  pad(n) {
+    return (n < 10) ? ("0" + n) : n;
   }
 
   ionViewDidEnter(){
@@ -59,7 +68,7 @@ export class IncidenciaPage {
 
         //refrescar USUARIOS
         //this.storage.get('usuarios').then((usuarios) =>{
-            this.storage.get('usuarios').then((usuarios) =>{
+            /*this.storage.get('usuarios').then((usuarios) =>{
               if(usuarios != "" && usuarios != undefined){        
                 this.arrayUsuarios = JSON.parse(usuarios.toString());
               }else{
@@ -74,11 +83,19 @@ export class IncidenciaPage {
           },
           error =>{
             console.log(error);
-          });
+          });*/
         /*},
         error =>{
           console.log(error);
         });*/
+
+        this.incidenciaService.getUsuariosFromAux(this.auxiliar.DNIAuxiliar).subscribe((usuarios) =>{                                    
+                                            this.arrayUsuarios = usuarios;
+                                            this.storage.set('usuarios', JSON.stringify(this.arrayUsuarios));
+                                        },
+                                        error => {
+                                            this.showAlert("Error", "No se pueden recuperar los usuarios del servidor", "Aceptar");
+                                        });
 
         //refrescar TIPOS
         this.storage.get('tipos').then((tipos) =>{
@@ -115,10 +132,15 @@ export class IncidenciaPage {
       
         let DNIAuxiliar = this.auxiliar.DNIAuxiliar;
         let Auxiliar = this.auxiliar.NomCompleto;
-        let Fecha_Incidencia = this.DateIni + " " + this.HourIni +":00";
+
+        //let Fecha_Incidencia = this.DateIni + " " + this.HourIni +":00";
         //Fecha_Incidencia = Fecha_Incidencia.replace("-", "/");
-        let Hora_Incidencia = "1899-12-30 " + this.HourIni +":00" //this.HourIni;
+        //let Hora_Incidencia = "1899-12-30 " + this.HourIni +":00" //this.HourIni;
         //Hora_Incidencia = Hora_Incidencia.replace("-", "/"); 
+        var _d = new Date(this.DateIni.split('T')[0]+'T'+this.HourIni.split('T')[1]);
+        _d.setTime( _d.getTime() + _d.getTimezoneOffset()*60*1000 );
+        let Fecha_Incidencia = _d.getFullYear() + this.pad(_d.getMonth() + 1) + this.pad(_d.getDate()) + this.pad(_d.getHours()) + this.pad(_d.getMinutes()) + this.pad(_d.getSeconds());
+
         let Usuario_ID = this.listUsuarioSelect;//this.arrayUsuarios[this.listUsuarioSelect].Usuario_ID;
         let Usuario = ""; //this.arrayUsuarios[this.listUsuarioSelect].NomCompleto;
         for(let i = 0; i < this.arrayUsuarios.length; ++i) { 
@@ -155,7 +177,7 @@ export class IncidenciaPage {
         this.loading.present();
 
 
-        this.incidenciaService.nuevaIncidencia(DNIAuxiliar, Auxiliar, Fecha_Incidencia, Hora_Incidencia, Usuario_ID, Usuario, MotivoIncidencia, Observaciones).subscribe((ID_inserted) =>{
+        this.incidenciaService.nuevaIncidencia(DNIAuxiliar, Auxiliar, Fecha_Incidencia, Fecha_Incidencia, Usuario_ID, Usuario, MotivoIncidencia, Observaciones).subscribe((ID_inserted) =>{
                                   console.log(ID_inserted[0].RegIncPresSAD_ID_Inserted);
                                   if(ID_inserted[0].RegIncPresSAD_ID_Inserted > 0){
 
@@ -171,11 +193,11 @@ export class IncidenciaPage {
                                     }*/
 
                                   }else{
-                                    this.showAlert("Error!", "Incidencia no enviada", "Aceptar");
+                                    this.loading.dismiss(0);
                                   }
                                 },
                                 error => {
-                                    this.showAlert("Error", "Incidencia no enviada", "Aceptar");
+                                  this.loading.dismiss(0);
                                 });
 
       }
@@ -287,15 +309,20 @@ export class IncidenciaPage {
           text: "Camara",
           handler: () => {
             this.uploadingImages[id] = true;            
-            Camera.getPicture({quality: 100, destinationType: Camera.DestinationType.DATA_URL}).then((imageURI) => {//, destinationType: Camera.DestinationType.DATA_URL
-              this.utils.resizeImage(this.base64string + imageURI, 1024, 768).then((imgResized) => {
+            Camera.getPicture({destinationType: Camera.DestinationType.DATA_URL, correctOrientation: true}).then((imageURI) => {//, destinationType: Camera.DestinationType.DATA_URL
+              /*this.utils.resizeImage(this.base64string + imageURI, 1024, 768).then((imgResized) => {
                 //this.uploadImage(imgResized, id);
                 console.log(imgResized);
                 this._ngZone.run(() => {
                   this.images[id] = imgResized;
                 });
                 this.uploadingImages[id] = false;
+              });*/
+
+              this._ngZone.run(() => {
+                this.images[id] = this.base64string + imageURI;
               });
+              this.uploadingImages[id] = false;
             }, (message) => {
               this.showAlert("Alerta", "mensaje: " + message, "Aceptar");
               console.log('Failed because: ' + message);
@@ -329,8 +356,12 @@ export class IncidenciaPage {
   clearForm(){
     this.listUsuarioSelect = undefined;
     this.listTipoSelect = undefined;
-    this.DateIni = undefined;
-    this.HourIni = undefined;
+    
+    var _d = new Date(new Date().toLocaleString());
+    this.DateIni = _d.getFullYear() + '-' + this.pad(_d.getMonth() + 1) + '-' + this.pad(_d.getDate()) + 'T' 
+    + this.pad(_d.getHours()) + ':' + this.pad(_d.getMinutes()) + ':00.000' + 'Z';
+    this.HourIni = this.DateIni;
+
     this.Obs = "";
     this.images = ["", "", "", ""];
     this.uploadingImages = [false, false, false, false];

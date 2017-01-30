@@ -28,19 +28,35 @@ export class chatPage {
   , private chatService: chatService
   , public loadingCtrl: LoadingController){
 
-     this.loading = this.loadingCtrl.create({
-      content: 'Entrando...'
-    });
+     
+
+    //EVENT MESSAGE FROM ROOM
+    this.chatService.newMessage.subscribe( m => {
+          if (m != null) {
+              //m.isLoading = false;
+              if(m.sendedByMe)
+                m.sendedByMe = 'True';
+              else
+                m.sendedByMe = 'False';
+
+              this.arrayMessageChat.push(m);
+
+              setTimeout(() => {
+                this.scrollTo(); 
+              });
+          }
+          }, (e) => console.log(e)
+      );
 
   }
 
   ionViewWillEnter(){
-     setTimeout(()=>{
+     /*setTimeout(()=>{
         this.loading.present();
-    });    
+     });  */  
   }
 
-  ionViewDidLoad(){
+  /*ionViewDidLoad(){
       
     this.storage.get('auxiliar').then((auxiliar) =>{
       if(auxiliar != "" && auxiliar != undefined){
@@ -72,9 +88,15 @@ export class chatPage {
     error =>{
       console.log(error);
     });
-  }
+  }*/
 
-  ionViewDidEnter(){   
+  ionViewDidEnter(){  
+
+    this.loading = this.loadingCtrl.create({
+      content: 'Entrando...'
+    }); 
+
+    this.loading.present();
 
     this.loading.onDidDismiss((messageChat) => {
       if (messageChat == null){
@@ -86,30 +108,33 @@ export class chatPage {
       }
       
     });
-     
-    //EVENT MESSAGE FROM ROOM
-    this.chatService.newMessage.subscribe( m => {
-            if (m != null) {
-                //m.isLoading = false;
-                if(m.sendedByMe)
-                  m.sendedByMe = 'True';
-                else
-                  m.sendedByMe = 'False';
 
-                this.arrayMessageChat.push(m);
-
-                setTimeout(() => {
-                  this.scrollTo(); 
-                });
-            }
-            }, (e) => console.log(e)
-        );
-
+    this.storage.get('auxiliar').then((auxiliar) =>{
+      if(auxiliar != "" && auxiliar != undefined){
+        this.auxiliar = JSON.parse(auxiliar.toString());
+        
+        this.chatService.joinRoom(undefined, this.auxiliar.DNIAuxiliar);
+        
+        this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar).subscribe((messageChat) =>{
+                                  this.arrayMessageChat = messageChat;
+                                  this.storage.set('messageChat', this.arrayMessageChat);
+                                  this.scrollTo(); 
+                                  this.loading.dismiss(messageChat);
+                                },
+                                error => {
+                                  this.loading.dismiss(null);                                  
+                                });   
+      }      
+    },
+    error =>{
+      console.log(error);
+    });
   }
 
   ionViewWillLeave(){
     //console.log("ionViewWillLeave CHAT");
-    //this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
+    this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
+    
   }
 
   classIcon(message){
@@ -136,6 +161,7 @@ export class chatPage {
                 message: msg
             });
 
+            //PARA ENVIAR AL SOCKET
             this.chatService.nuevoMessage(message)
                 .subscribe((res) => {
                   this.arrayMessageChat.push(message);
