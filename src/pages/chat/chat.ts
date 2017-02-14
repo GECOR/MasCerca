@@ -32,21 +32,21 @@ export class chatPage {
 
     //EVENT MESSAGE FROM ROOM
     this.chatService.newMessage.subscribe( m => {
-          if (m != null) {
-              //m.isLoading = false;
-              if(m.sendedByMe)
-                m.sendedByMe = 'True';
-              else
-                m.sendedByMe = 'False';
+      if (m != null) {
+          //m.isLoading = false;
+          if(m.sendedByMe)
+            m.sendedByMe = 'True';
+          else
+            m.sendedByMe = 'False';
 
-              this.arrayMessageChat.push(m);
+          this.arrayMessageChat.push(m);
 
-              setTimeout(() => {
-                this.scrollTo(); 
-              });
-          }
-          }, (e) => console.log(e)
-      );
+          setTimeout(() => {
+            this.scrollTo(); 
+          });
+      }
+      }, (e) => console.log(e)
+    );
 
   }
 
@@ -133,7 +133,7 @@ export class chatPage {
 
   ionViewWillLeave(){
     //console.log("ionViewWillLeave CHAT");
-    this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
+    //this.chatService.forceDisconnect(this.auxiliar.DNIAuxiliar);
     
   }
 
@@ -188,6 +188,16 @@ export class chatPage {
         buttons: [okButton]
       });
       alert.present();
+  }
+
+  getHourMinuteFromDateString(dateString): string{
+    var date = new Date(dateString);
+    var hour = date.getHours().toString();
+    var minutes = date.getMinutes();
+    var s_minutes = date.getMinutes().toString();
+    if (minutes < 10) s_minutes = '0' + minutes.toString();
+
+    return hour + ':' + s_minutes;
   }
 
   getCurrentDateString(): string {

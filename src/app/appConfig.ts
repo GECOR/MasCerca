@@ -1,8 +1,8 @@
 //export var urlGecorApi = "http://localhost/MasCercaAPI1/api/";
 
 //export var urlGecorApi = "http://192.168.1.76/MasCercaAPI1/api/";//danioc
-export var urlGecorApi = "http://213.97.71.157/MasCercaAPI/api/";//Damianpc
-//export var urlGecorApi = "http://mv0144.aytomalaga.intranet/MasCercaAPI/api/";//ayuntamiento Málaga
+//export var urlGecorApi = "http://213.97.71.157/MasCercaAPI/api/";//Damianpc
+export var urlGecorApi = "http://pgestmovil.malaga.eu//MasCercaAPI/api/";//ayuntamiento Málaga
 //export var urlGecorApi = "http://192.168.1.147/MasCercaAPI1/api/";//josepc
 //export var urlGecorApi = "http://192.168.1.75/MasCercaAPI1/api/";//antonio
 

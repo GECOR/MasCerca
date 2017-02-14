@@ -11,8 +11,9 @@
 <ion-content #chatContent padding class="chat">
   
     <ion-list no-lines>
-        <ion-item *ngFor="let messages of arrayMessageChat">
+        <ion-item *ngFor="let messages of arrayMessageChat" class="bubble">
             <p *ngIf="messages.sendedByMe === 'True'" item-right>{{messages.message}}</p>
+            <p *ngIf="messages.sendedByMe === 'True'" class="date-right">{{messages.dateMessage}}</p>
 
             <ion-avatar *ngIf="messages.sendedByMe === 'True'" item-right>
                 <img src="https://cdn.schd.ws/common/img/avatar-empty.png">
@@ -23,6 +24,7 @@
             
             <h2 *ngIf="messages.sendedByMe === 'False'">{{messages.sendedByName}}</h2>
             <p *ngIf="messages.sendedByMe === 'False'">{{messages.message}}</p>
+            <p *ngIf="messages.sendedByMe === 'False'" class="date-left">{{messages.dateMessage}}</p>
 
         </ion-item>
     </ion-list>

@@ -63,9 +63,8 @@ export class IncidenciaPage {
    //this.HourIni 
 
     this.storage.get('auxiliar').then((auxiliar) =>{
-      if(auxiliar != "" && auxiliar != undefined){        
-        this.auxiliar = JSON.parse(auxiliar.toString());
-
+      if(auxiliar != "" && auxiliar != undefined){    
+        
         //refrescar USUARIOS
         //this.storage.get('usuarios').then((usuarios) =>{
             /*this.storage.get('usuarios').then((usuarios) =>{
@@ -89,25 +88,57 @@ export class IncidenciaPage {
           console.log(error);
         });*/
 
+
+        this.loading = this.loadingCtrl.create({
+          content: 'Obteniendo usuarios...'
+        });
+        
+        this.loading.present();
+
+        this.auxiliar = JSON.parse(auxiliar.toString());
+
+
         this.incidenciaService.getUsuariosFromAux(this.auxiliar.DNIAuxiliar).subscribe((usuarios) =>{                                    
                                             this.arrayUsuarios = usuarios;
                                             this.storage.set('usuarios', JSON.stringify(this.arrayUsuarios));
+                                            this.loading.dismiss();
+                                            this.getTipos();
                                         },
                                         error => {
+                                            this.loading.dismiss();
+                                            //this.getTipos();
                                             this.showAlert("Error", "No se pueden recuperar los usuarios del servidor", "Aceptar");
                                         });
 
-        //refrescar TIPOS
+        
+
+      }
+    },
+    error =>{
+      console.log(error);
+    });
+  }
+
+getTipos(){
+  //refrescar TIPOS
         this.storage.get('tipos').then((tipos) =>{
             this.storage.get('tipos').then((tipos) =>{
               if(tipos != "" && tipos != undefined){        
                 this.arrayTipos = JSON.parse(tipos.toString());
               }else{
-                this.incidenciaService.getTipos(this.auxiliar.DNIAuxiliar).subscribe((tipos) =>{                                    
+                 this.loading = this.loadingCtrl.create({
+                    content: 'Obteniendo tipos...'
+                  });
+                  
+                  this.loading.present();
+
+                  this.incidenciaService.getTipos(this.auxiliar.DNIAuxiliar).subscribe((tipos) =>{                                    
                                             this.arrayTipos = tipos;
                                             this.storage.set('tipos', JSON.stringify(this.arrayTipos));
+                                            this.loading.dismiss();
                                         },
                                         error => {
+                                            this.loading.dismiss();
                                             this.showAlert("Error", "No se pueden recuperar los tipos del servidor", "Aceptar");
                                         });
               }
@@ -119,13 +150,7 @@ export class IncidenciaPage {
         error =>{
           console.log(error);
         });
-
-      }
-    },
-    error =>{
-      console.log(error);
-    });
-  }
+}
 
   sendIncentAndPhotos(){
     if(this.auxiliar != undefined){

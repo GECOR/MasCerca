@@ -1,12 +1,26 @@
-/*
+
 .chat{
-    .footerChat{
+    /*.footerChat{
     //background-color: blue;
     }
 
     .footerButtonClass{
         height: 30px;
         width: 30px;
+    }*/
+
+    .date-left {
+        font-size: 0.5em;
+    }
+
+    .date-right {
+        font-size: 0.5em;
+        position: absolute;
+        right: 71px;
+        bottom: 7px;
+    }
+
+    .bubble {
+        position: relative;
     }
 }
-*/

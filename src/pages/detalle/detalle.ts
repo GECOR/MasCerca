@@ -180,7 +180,14 @@ export class detallePage {
     initGeolocation(){
         //cargaCuadrante.Direccion
 
-        this.geo.getLatLngFromDirection(this.cargaCuadrante.Direccion.replace(/[^A-Za-z0-9]/g, '')+", Málaga, España").then(location =>{
+        debugger;
+
+        var _dir = this.cargaCuadrante.Direccion;
+        if (this.cargaCuadrante.Direccion.indexOf('[') > -1) 
+            _dir = this.cargaCuadrante.Direccion.substring(0, this.cargaCuadrante.Direccion.indexOf('['));        
+
+        //this.geo.getLatLngFromDirection(_dir + ", Málaga, España").then(location =>{
+        this.geo.getLatLngFromDirection(_dir.replace(/[^A-Za-z0-9]/g, '')+", Málaga, España").then(location =>{
                 //console.log("DETALLE initGeolocation()");
                 //console.log(location);
                 if(location){

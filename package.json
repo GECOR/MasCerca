@@ -40,6 +40,7 @@
     "cordova-plugin-device",
     "cordova-plugin-geolocation",
     "cordova-plugin-image-picker",
+    "cordova-plugin-crosswalk-webview",
     "cordova-sqlite-storage",
     "phonegap-plugin-push",
     {

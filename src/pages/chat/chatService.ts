@@ -111,7 +111,8 @@ export class chatService {
 
 //////////////////////////////////// END API SERVICE CALL ////////////////////////////////////
 
-    joinRoom(oldRoom: string,actualRoom: string): void {        
+    joinRoom(oldRoom: string,actualRoom: string): void {
+        console.log('connected to room', actualRoom);  
         this.socket.emit(MessagingEvent[MessagingEvent.JoinRoom], oldRoom, actualRoom);
     }
 
