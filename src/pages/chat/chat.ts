@@ -116,7 +116,7 @@ export class chatPage {
         this.chatService.joinRoom(undefined, this.auxiliar.DNIAuxiliar);
         
         this.chatService.getMessagesFromAux(this.auxiliar.DNIAuxiliar).subscribe((messageChat) =>{
-                                  this.arrayMessageChat = messageChat;
+                                  this.arrayMessageChat = messageChat;//this.chatSort.transform(messageChat, "dateMessage", "asc");
                                   this.storage.set('messageChat', this.arrayMessageChat);
                                   this.scrollTo(); 
                                   this.loading.dismiss(messageChat);

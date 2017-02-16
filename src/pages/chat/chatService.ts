@@ -76,7 +76,10 @@ export class chatService {
         let options = new RequestOptions({ headers: headers });
         
         return this.http.post(urlGecorApi + 'Messages/getMessagesFromAux', body, options) //urlGecorApi + 'Auxiliares/loginAuxiliar'
-                        .map(res => <Array<MessageChat>> res.json())
+                        .map(res => <Array<MessageChat>> res.json().sort((a: any, b: any) => {
+                                return a["dateMessage"].toString().localeCompare(b["dateMessage"].toString());
+                            })
+                        )
                         //.do(res => <Array<MessageChat>> res) // eyeball results in the console
                         .catch(this.handleError)
                     
