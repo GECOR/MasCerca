@@ -1,14 +1,5 @@
 
-.chat{
-    /*.footerChat{
-    //background-color: blue;
-    }
-
-    .footerButtonClass{
-        height: 30px;
-        width: 30px;
-    }*/
-
+/*.chat{
     .date-left {
         font-size: 0.5em;
     }
@@ -23,4 +14,86 @@
     .bubble {
         position: relative;
     }
+}*/
+
+chat-page{
+  .chat {
+    //padding-bottom: 50px;
+    
+    background: #ede9e4;
+    background: -webkit-linear-gradient(top,#ede9e4 0%,#ede9e4 20%,#e5ddd5 100%);
+    background: linear-gradient(to bottom,#ede9e4 0%,#ede9e4 20%,#e5ddd5 100%);  
+    
+    .message-list {
+      padding: 15px;
+      /*margin-bottom: 56px;*/
+    }
+    
+    .chat-message {
+      padding: 0;
+      display: table;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    
+    .message-content {
+      display: block;
+      word-wrap: break-word;
+      margin-bottom: 6px;
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    
+    .message {
+        background-color: #fff;
+        border: 1px solid #e7eaec;
+        text-align: left;
+        display: block;
+        padding: 10px 20px;
+        position: relative;
+        border-radius: 4px;
+        box-shadow: 0 1px .5px rgba(0,0,0,.13);
+    }
+    
+    .message-date {
+      font-size: 10px;
+      color: #888888;
+      position: absolute;
+      bottom: 0px;
+    }
+    
+    .chat-message.in .message-date {
+      float: right;
+      right: 4px;
+    }
+    
+    .chat-message.out .message-date {
+      float: left;
+      right: 4px;
+    }
+    
+    .chat-message.in .message {
+      text-align: left;
+      max-width: 336px;
+      float: left;
+      padding: 3px 3px 10px 3px;
+      min-width: 108px;
+    }
+    
+    .chat-message.out .message {
+      text-align: right;
+      max-width: 336px;
+      float: right;
+      padding: 3px 3px 10px 3px;
+      min-width: 108px;
+      background-color: #dcf8c6;
+    }
+  
+  .author-name {
+      font-weight: bold;
+      margin-bottom: 3px;
+      font-size: 12px;
+    }  
+  }
 }
+

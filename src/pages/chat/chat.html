@@ -7,9 +7,7 @@
   </ion-navbar>
 </ion-header>
 
-
-<ion-content #chatContent padding class="chat">
-  
+<!--<ion-content #chatContent padding class="chat">
     <ion-list no-lines>
         <ion-item *ngFor="let messages of arrayMessageChat" class="bubble">
             <p *ngIf="messages.sendedByMe === 'True'" item-right>{{messages.message}}</p>
@@ -28,7 +26,22 @@
 
         </ion-item>
     </ion-list>
- 
+</ion-content>-->
+
+<ion-content #chatContent class="chat">
+  <div>
+    <div class="message-list">    
+      <div *ngFor="let messages of arrayMessageChat">
+        <div class="chat-message" [ngClass]="{in: messages.sendedByMe != 'True', out: messages.sendedByMe === 'True'}">
+          <div class="message tail">
+            <!--<span class="author-name">{{messages.sendedByName}}</span>-->
+            <span class="message-date">{{messages.dateMessage}}</span>              
+            <span class="message-content">{{messages.message}}</span>  
+          </div>
+        </div>   
+      </div>
+    </div>
+  </div>
 </ion-content>
 
 <ion-footer class="chat">

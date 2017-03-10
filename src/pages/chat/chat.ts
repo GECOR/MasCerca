@@ -1,14 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { NgClass } from '@angular/common';
-import { Observable } from 'rxjs';
 import { UtilsProvider } from './../../providers/utils';
 import { MessageChat } from './models';
 import { Auxiliar } from './../login/loginInterface';
 import { chatService } from './chatService';
 
 @Component({
+  selector: 'chat-page',
   templateUrl: 'chat.html',
   providers: [UtilsProvider, chatService, Storage]
 })

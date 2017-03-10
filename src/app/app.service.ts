@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Subject, BehaviorSubject, Observable, ConnectableObservable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { urlGecorApi } from './appConfig';
 
 @Injectable()

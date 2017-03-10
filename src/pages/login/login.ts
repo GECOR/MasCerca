@@ -1,4 +1,4 @@
-import { Component, forwardRef, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, AlertController, Platform, LoadingController } from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';

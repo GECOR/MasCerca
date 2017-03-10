@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {LoadingController , NavController, AlertController, Platform, App} from 'ionic-angular';
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/Rx';
 import {LoginPage} from '../pages/login/login';
@@ -55,8 +55,8 @@ export class UtilsProvider {
             var c=document.createElement('canvas');
             var ctx=c.getContext("2d");
 
-            var cw=c.width;
-            var ch=c.height;
+            //var cw=c.width;
+            //var ch=c.height;
 
             var maxW=width;
             var maxH=height;

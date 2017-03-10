@@ -3,7 +3,7 @@ import { NavController, ModalController, ActionSheetController, AlertController,
 //import { NativeStorage } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import { GalleryModalPage } from './../galleryModal/galleryModal';
-import { Geolocation, Camera, ImagePicker } from 'ionic-native';
+import { Camera, ImagePicker } from 'ionic-native';
 import { UtilsProvider } from './../../providers/utils';
 import { Usuario } from './../detalle/detalleInterface'
 import { Tipo } from './../incidencia/incidenciaInterface'

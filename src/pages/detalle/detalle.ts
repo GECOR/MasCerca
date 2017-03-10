@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
-import { LaunchNavigator, LaunchNavigatorOptions, Geolocation } from 'ionic-native';
+import { LaunchNavigator } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import {IncidenciaPage} from '../incidencia/incidencia';
-import {Usuario} from './detalleInterface';
 import {CargaCuadrante} from './../semanal/semanalInterface'
 import {detalleService} from './detalleService'
 import {Auxiliar} from './../login/loginInterface';
